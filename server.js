@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+
 dotenv.config({
   path: 'config.env',
 });
@@ -8,6 +9,8 @@ const ApiError = require('./utils/apiError');
 const errorMiddleware = require('./Middlewares/errorMiddleware');
 const DBConnection = require('./Config/database');
 const categoryRoute = require('./Routes/categoryRoutes');
+const subCategoryRoute = require('./Routes/subCategoryRoutes');
+const brandRotes = require('./Routes/brandRoutes');
 
 // DB connection
 DBConnection();
@@ -22,6 +25,8 @@ console.log(`mode: ${process.env.NODE_ENV}`);
 
 // Mount Routes
 app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/subcategories', subCategoryRoute);
+app.use('/api/v1/brands', brandRotes);
 
 // handle undefined routes
 app.all('*', (req, res, next) => {
