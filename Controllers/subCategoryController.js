@@ -8,6 +8,11 @@ const SubCategory = require('../Models/subCategoryModel');
  * @route /api/v1/subcategories/create-subcategory
  * @access Private
  */
+
+exports.setCategoryIdToBody = asyncHandler(async (req, res, next) => {
+  if (!req.body.categoryId) req.body.category = req.params.categoryId;
+  next();
+});
 exports.createsubCategory = asyncHandler(async (req, res) => {
   const { name, category } = req.body;
   const subCategory = await SubCategory.create({

@@ -15,6 +15,7 @@ exports.getCategories = asyncHandler(async (req, res) => {
   const categories = await Category.find({}).skip(skip).limit(limit);
   res.status(200).json({
     resultes: categories.length,
+    page,
     data: categories,
   });
 });

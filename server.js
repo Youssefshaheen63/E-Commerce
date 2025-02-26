@@ -10,8 +10,8 @@ const errorMiddleware = require('./Middlewares/errorMiddleware');
 const DBConnection = require('./Config/database');
 const categoryRoute = require('./Routes/categoryRoutes');
 const subCategoryRoute = require('./Routes/subCategoryRoutes');
-const brandRotes = require('./Routes/brandRoutes');
-
+const brandRoute = require('./Routes/brandRoutes');
+const productRoute = require('./Routes/productRoutes');
 // DB connection
 DBConnection();
 
@@ -26,7 +26,8 @@ console.log(`mode: ${process.env.NODE_ENV}`);
 // Mount Routes
 app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/subcategories', subCategoryRoute);
-app.use('/api/v1/brands', brandRotes);
+app.use('/api/v1/brands', brandRoute);
+app.use('/api/v1/products', productRoute);
 
 // handle undefined routes
 app.all('*', (req, res, next) => {

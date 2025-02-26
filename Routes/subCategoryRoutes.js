@@ -6,6 +6,7 @@ const {
   getSubCategory,
   updateSubCategory,
   deleteSubCategory,
+  setCategoryIdToBody,
 } = require('../Controllers/subCategoryController');
 
 const validators = require('../utils/validators/subCategoryValidator');
@@ -15,7 +16,8 @@ const validators = require('../utils/validators/subCategoryValidator');
 const router = express.Router({ mergeParams: true });
 
 router.post(
-  '/create-subcategory',
+  '/',
+  setCategoryIdToBody,
   validators.createSubCategoryValidators,
   createsubCategory,
 );
