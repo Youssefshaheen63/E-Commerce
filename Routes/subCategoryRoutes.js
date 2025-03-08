@@ -7,6 +7,7 @@ const {
   updateSubCategory,
   deleteSubCategory,
   setCategoryIdToBody,
+  createFilterObj
 } = require('../Controllers/subCategoryController');
 
 const validators = require('../utils/validators/subCategoryValidator');
@@ -21,7 +22,7 @@ router.post(
   validators.createSubCategoryValidators,
   createsubCategory,
 );
-router.get('/', getSubCategories);
+router.get('/',createFilterObj, getSubCategories);
 router
   .route('/:id')
   .get(validators.getSubCategoryValdiators, getSubCategory)

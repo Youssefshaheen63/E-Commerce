@@ -1,7 +1,22 @@
-const slugify = require('slugify');
-const asyncHandler = require('express-async-handler');
-const ApiError = require('../utils/apiError');
+const factory = require('./handlersFactory');
 const SubCategory = require('../Models/subCategoryModel');
+
+
+
+exports.setCategoryIdToBody = (req, res, next) => {
+  // Nested route (Create)
+  if (!req.body.category) req.body.category = req.params.categoryId;
+  next();
+};
+
+// Nested route
+// GET /api/v1/categories/:categoryId/subcategories
+exports.createFilterObj = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
+  req.filterObj = filterObject;
+  next();
+};
 
 /**
  * @desc Create SubCategory
@@ -9,19 +24,7 @@ const SubCategory = require('../Models/subCategoryModel');
  * @access Private
  */
 
-exports.setCategoryIdToBody = asyncHandler(async (req, res, next) => {
-  if (!req.body.categoryId) req.body.category = req.params.categoryId;
-  next();
-});
-exports.createsubCategory = asyncHandler(async (req, res) => {
-  const { name, category } = req.body;
-  const subCategory = await SubCategory.create({
-    name,
-    slug: slugify(name),
-    category,
-  });
-  res.status(201).json({ data: subCategory });
-});
+exports.createsubCategory =  factory.createOne(SubCategory);
 
 /**
  * Nested Routes :
@@ -34,71 +37,21 @@ exports.createsubCategory = asyncHandler(async (req, res) => {
  * @route GET /api/v1/subcategories
  * @access Public
  */
-exports.getSubCategories = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 2;
-  const skip = (page - 1) * limit;
-
-  console.log(req.params.categoryId);
-
-  let filterObject = {};
-  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
-
-  const subcategories = await SubCategory.find(filterObject)
-    .skip(skip)
-    .limit(limit);
-  // .populate({
-  //   path: 'category',
-  //   select: 'name -_id',
-  // });
-  res.status(200).json({
-    resultes: subcategories.length,
-    page,
-    data: subcategories,
-  });
-});
+exports.getSubCategories = factory.getAll(SubCategory);
 
 /**
  * @desc Get Specific SubCategory
  * @route GET /api/v1/subcategories/:id
  * @access Public
  */
-exports.getSubCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const subcategory = await SubCategory.findById(id);
-
-  if (!subcategory) {
-    return next(new ApiError(`No SubCategory exist by this ${id}`, 404));
-  }
-
-  res.status(200).json({
-    data: subcategory,
-  });
-});
-
+exports.getSubCategory = factory.getOne(SubCategory);
 /**
  * @desc Update SubCategory
  * @route PATCH /api/v1/subcategories/:id
  * @access Private
  */
-exports.updateSubCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const { name, category } = req.body;
+exports.updateSubCategory = factory.updateOne(SubCategory);
 
-  const subcategory = await SubCategory.findOneAndUpdate(
-    { _id: id },
-    { name, slug: slugify(name), category },
-    { new: true },
-  );
-
-  if (!subcategory) {
-    return next(new ApiError(`No SubCategory exist by this ${id}`, 404));
-  }
-
-  res.status(200).json({
-    data: subcategory,
-  });
-});
 
 /**
  * @desc Delete SubCategory
@@ -106,15 +59,4 @@ exports.updateSubCategory = asyncHandler(async (req, res, next) => {
  * @access Private
  */
 
-exports.deleteSubCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const subcategory = await SubCategory.findByIdAndDelete(id);
-
-  if (!subcategory) {
-    return next(new ApiError(`No SubCategory exist by this ${id}`, 404));
-  }
-
-  res.status(204).json({
-    data: null,
-  });
-});
+exports.deleteSubCategory = factory.deleteOne(SubCategory);
