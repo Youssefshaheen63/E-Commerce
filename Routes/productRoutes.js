@@ -8,7 +8,9 @@ const router = express.Router();
 router.get('/', productController.getProducts);
 
 router.post(
-  '/create-product',
+  '/',
+  productController.uploadProductImages,
+  productController.resizeProductsImages,
   validators.createProductvValidators,
   productController.createProduct,
 );
@@ -16,6 +18,10 @@ router.post(
 router
   .route('/:id')
   .get(validators.getProductValdiators, productController.getProduct)
-  .patch(validators.updateProductValdiators, productController.updateProduct)
+  .patch(
+    productController.uploadProductImages,
+    productController.resizeProductsImages,
+    validators.updateProductValdiators,
+    productController.updateProduct)
   .delete(validators.deleteProductValdiators, productController.deleteProduct);
 module.exports = router;

@@ -1,3 +1,5 @@
+const path = require('path')
+
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
@@ -20,6 +22,8 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'uploads')))
+
 app.use(morgan('dev')); // http request logger
 console.log(`mode: ${process.env.NODE_ENV}`);
 

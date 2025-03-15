@@ -8,7 +8,9 @@ const router = express.Router();
 router.get('/', brandController.getBrands);
 
 router.post(
-  '/create-brand',
+  '/',
+  brandController.uploadBrandImage,
+  brandController.resizeImage,
   validators.createBrandValidators,
   brandController.createBrand,
 );
@@ -16,6 +18,10 @@ router.post(
 router
   .route('/:id')
   .get(validators.getBrandValdiators, brandController.getBrand)
-  .patch(validators.updateBrandValdiators, brandController.updateBrand)
+  .patch( 
+    brandController.uploadBrandImage,
+    brandController.resizeImage,
+    validators.updateBrandValdiators,
+    brandController.updateBrand)
   .delete(validators.deleteBrandValdiators, brandController.deleteBrand);
 module.exports = router;
